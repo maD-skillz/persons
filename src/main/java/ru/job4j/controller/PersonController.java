@@ -4,18 +4,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.domain.Person;
-import ru.job4j.repository.PersonRepository;
+import ru.job4j.service.PersonService;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/person")
 public class PersonController {
-    private final PersonRepository persons;
+    private final PersonService persons;
 
-    public PersonController(final PersonRepository persons) {
+    public PersonController(final PersonService persons) {
         this.persons = persons;
     }
 
@@ -44,6 +43,13 @@ public class PersonController {
     @PutMapping("/")
     public ResponseEntity<Void> update(@RequestBody Person person) {
         this.persons.save(person);
+        Optional<Person> personById = persons.findById(person.getId());
+        if (personById.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        if (!personById.get().equals(person)) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok().build();
     }
 
@@ -52,6 +58,11 @@ public class PersonController {
         Person person = new Person();
         person.setId(id);
         this.persons.delete(person);
+        Optional<Person> personById = persons.findById(id);
+        if (personById.isPresent()) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok().build();
     }
+
 }
