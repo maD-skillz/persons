@@ -34,6 +34,9 @@ public class PersonController {
 
     @PostMapping("/")
     public ResponseEntity<Person> create(@RequestBody Person person) {
+        if (persons.checkPersonsBySameLogin(person)) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
         return new ResponseEntity<Person>(
                 this.persons.save(person),
                 HttpStatus.CREATED
@@ -42,27 +45,20 @@ public class PersonController {
 
     @PutMapping("/")
     public ResponseEntity<Void> update(@RequestBody Person person) {
-        this.persons.save(person);
-        Optional<Person> personById = persons.findById(person.getId());
-        if (personById.isEmpty()) {
-            return ResponseEntity.badRequest().build();
+        if (persons.update(person)) {
+            return ResponseEntity.ok().build();
         }
-        if (!personById.get().equals(person)) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.badRequest().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
         Person person = new Person();
         person.setId(id);
-        this.persons.delete(person);
-        Optional<Person> personById = persons.findById(id);
-        if (personById.isPresent()) {
-            return ResponseEntity.badRequest().build();
+        if (persons.delete(person)) {
+            return ResponseEntity.ok().build();
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.badRequest().build();
     }
 
 }

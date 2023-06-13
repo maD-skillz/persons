@@ -18,6 +18,15 @@ public class PersonService {
         return repository.save(person);
     }
 
+    public boolean checkPersonsBySameLogin(Person person) {
+        for (Person p : repository.findAll()) {
+            if (p.getLogin().equals(person.getLogin())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public List<Person> findAll() {
         return repository.findAll();
     }
@@ -27,11 +36,22 @@ public class PersonService {
         return optionalPerson.isEmpty() ? Optional.empty() : optionalPerson;
     }
 
-    public void update(Person person) {
+    public boolean update(Person person) {
+        Optional<Person> personById = findById(person.getId());
+        if (personById.isEmpty()) {
+            return false;
+        }
         repository.save(person);
+        return person.equals(personById.get());
     }
 
-    public void delete(Person person) {
-        repository.delete(person);
+    public boolean delete(Person person) {
+        Optional<Person> personById = findById(person.getId());
+        if (personById.isPresent()) {
+            repository.delete(person);
+            return true;
+        } else {
+            return false;
+        }
     }
 }
