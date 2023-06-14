@@ -42,7 +42,7 @@ public class PersonService {
             return false;
         }
         repository.save(person);
-        return person.equals(personById.get());
+        return true;
     }
 
     public boolean delete(Person person) {
@@ -50,8 +50,7 @@ public class PersonService {
         if (personById.isPresent()) {
             repository.delete(person);
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 }

@@ -1,5 +1,6 @@
 package ru.job4j.controller;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -7,7 +8,6 @@ import ru.job4j.domain.Person;
 import ru.job4j.service.PersonService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/person")
@@ -34,13 +34,14 @@ public class PersonController {
 
     @PostMapping("/")
     public ResponseEntity<Person> create(@RequestBody Person person) {
-        if (persons.checkPersonsBySameLogin(person)) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        try {
+            var savedPerson = this.persons.save(person);
+            return new ResponseEntity<Person>(
+                    savedPerson,
+                    HttpStatus.CREATED);
+        } catch (ConstraintViolationException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<Person>(
-                this.persons.save(person),
-                HttpStatus.CREATED
-        );
     }
 
     @PutMapping("/")
