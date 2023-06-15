@@ -19,15 +19,6 @@ public class PersonService {
         return repository.save(person);
     }
 
-    public boolean checkPersonsBySameLogin(Person person) {
-        for (Person p : repository.findAll()) {
-            if (p.getLogin().equals(person.getLogin())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public List<Person> findAll() {
         return repository.findAll();
     }
