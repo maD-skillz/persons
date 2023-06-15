@@ -33,15 +33,17 @@ public class PersonController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Person> create(@RequestBody Person person) {
+    public ResponseEntity<Person> create(
+            @RequestBody Person person) throws ConstraintViolationException {
         try {
             var savedPerson = this.persons.save(person);
             return new ResponseEntity<Person>(
                     savedPerson,
                     HttpStatus.CREATED);
         } catch (ConstraintViolationException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            e.printStackTrace();
         }
+        return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
     @PutMapping("/")

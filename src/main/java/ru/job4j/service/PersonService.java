@@ -1,6 +1,7 @@
 package ru.job4j.service;
 
 import lombok.AllArgsConstructor;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.stereotype.Service;
 import ru.job4j.domain.Person;
 import ru.job4j.repository.PersonRepository;
@@ -14,7 +15,7 @@ public class PersonService {
 
     private final PersonRepository repository;
 
-    public Person save(Person person) {
+    public Person save(Person person) throws ConstraintViolationException {
         return repository.save(person);
     }
 
