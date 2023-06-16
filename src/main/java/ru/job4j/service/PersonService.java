@@ -33,6 +33,10 @@ public class PersonService {
         return optionalPerson.isEmpty() ? Optional.empty() : optionalPerson;
     }
 
+    public Optional<Person> findPersonByLogin(String login) {
+        return Optional.of(repository.findByLogin(login));
+    }
+
     public boolean update(Person person) {
         Optional<Person> personById = findById(person.getId());
         if (personById.isEmpty()) {
