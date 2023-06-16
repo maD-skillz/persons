@@ -19,7 +19,6 @@ public class PersonController {
 
     private BCryptPasswordEncoder encoder;
 
-
     @GetMapping("/all")
     public List<Person> findAll() {
         return this.persons.findAll();
