@@ -15,8 +15,13 @@ public class PersonService {
 
     private final PersonRepository repository;
 
-    public Person save(Person person) throws ConstraintViolationException {
-        return repository.save(person);
+    public Optional<Person> save(Person person) throws ConstraintViolationException {
+        try {
+            repository.save(person);
+        } catch (ConstraintViolationException e) {
+            return Optional.empty();
+        }
+        return Optional.of(person);
     }
 
     public List<Person> findAll() {
