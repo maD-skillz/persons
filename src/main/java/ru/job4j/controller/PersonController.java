@@ -36,6 +36,7 @@ public class PersonController {
     @PostMapping("/")
     public ResponseEntity<Person> create(
             @RequestBody Person person) throws ConstraintViolationException {
+        person.setPassword(encoder.encode(person.getPassword()));
         var optionalPerson = persons.save(person);
         return new ResponseEntity<Person>(
                 optionalPerson.isPresent() ? HttpStatus.OK : HttpStatus.CONFLICT
@@ -58,12 +59,6 @@ public class PersonController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();
-    }
-
-    @PostMapping("/sign-up")
-    public void signUp(@RequestBody Person person) {
-        person.setPassword(encoder.encode(person.getPassword()));
-        persons.save(person);
     }
 
 }
