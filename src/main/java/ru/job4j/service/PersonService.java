@@ -19,7 +19,7 @@ public class PersonService {
         try {
             repository.save(person);
         } catch (ConstraintViolationException e) {
-            return Optional.empty();
+            e.printStackTrace();
         }
         return Optional.of(person);
     }
