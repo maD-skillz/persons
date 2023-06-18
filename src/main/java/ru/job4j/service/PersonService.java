@@ -18,10 +18,11 @@ public class PersonService {
     public Optional<Person> save(Person person) throws ConstraintViolationException {
         try {
             repository.save(person);
+            return Optional.of(person);
         } catch (ConstraintViolationException e) {
             e.printStackTrace();
         }
-        return Optional.of(person);
+        return Optional.empty();
     }
 
     public List<Person> findAll() {
