@@ -34,8 +34,8 @@ public class PersonService {
         return optionalPerson.isEmpty() ? Optional.empty() : optionalPerson;
     }
 
-    public Optional<Person> findPersonByLogin(String login) {
-        return Optional.of(repository.findByLogin(login));
+    public Person findPersonByLogin(String login) {
+        return repository.findByLogin(login);
     }
 
     public boolean update(Person person) {

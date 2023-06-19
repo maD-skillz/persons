@@ -33,7 +33,7 @@ public class PersonController {
         );
     }
 
-    @PostMapping("/")
+    @PostMapping("/create")
     public ResponseEntity<Person> create(
             @RequestBody Person person) throws ConstraintViolationException {
         person.setPassword(encoder.encode(person.getPassword()));
