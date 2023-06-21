@@ -36,6 +36,12 @@ public class PersonController {
     @PostMapping("/create")
     public ResponseEntity<Person> create(
             @RequestBody Person person) throws ConstraintViolationException {
+        if (person.getLogin() == null || person.getPassword() == null) {
+           throw new NullPointerException("Login or password should not be empty!");
+        }
+        if (person.getLogin().length() < 3 || person.getPassword().length() < 6) {
+            throw new IllegalArgumentException("Invalid username or password");
+        }
         person.setPassword(encoder.encode(person.getPassword()));
         var optionalPerson = persons.save(person);
         return new ResponseEntity<Person>(
@@ -45,6 +51,12 @@ public class PersonController {
 
     @PutMapping("/")
     public ResponseEntity<Void> update(@RequestBody Person person) {
+        if (person.getLogin() == null || person.getPassword() == null) {
+            throw  new NullPointerException("Login or password should not be empty!");
+        }
+        if (person.getLogin().length() < 3 || person.getPassword().length() < 6) {
+            throw new IllegalArgumentException("Invalid username or password");
+        }
         if (persons.update(person)) {
             return ResponseEntity.ok().build();
         }
