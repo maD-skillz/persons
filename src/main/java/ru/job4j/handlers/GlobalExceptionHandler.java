@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,9 +26,15 @@ public class GlobalExceptionHandler {
         this.objectMapper = objectMapper;
     }
 
-    @ExceptionHandler(value = {NullPointerException.class, IllegalArgumentException.class})
+    @ExceptionHandler(value = {
+                    NullPointerException.class,
+                    IllegalArgumentException.class,
+                    ResponseStatusException.class
+    })
     public void handleException(
-            Exception e, HttpServletRequest request, HttpServletResponse response
+            Exception e,
+            HttpServletRequest request,
+            HttpServletResponse response
     ) throws IOException {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         response.setContentType("application/json");

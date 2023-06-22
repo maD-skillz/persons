@@ -1,0 +1,1 @@
+alter table person add constraint login unique (login);
