@@ -1,12 +1,12 @@
 package ru.job4j.controller;
 
 import lombok.AllArgsConstructor;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import ru.job4j.dto.PersonDTO;
 import ru.job4j.domain.Person;
 import ru.job4j.service.PersonService;
 
@@ -70,6 +70,26 @@ public class PersonController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> updatePartial(@RequestBody PersonDTO personDTO) {
+        Optional<Person> optionalPerson = persons.findById(personDTO.getId());
+        if (optionalPerson.isPresent()) {
+            Person person = optionalPerson.get();
+            if (personDTO.getLogin() != null) {
+                person.setLogin(personDTO.getLogin());
+            }
+            if (personDTO.getPassword() != null) {
+                person.setPassword(encoder.encode(personDTO.getPassword()));
+            }
+            persons.save(person);
+            return ResponseEntity.ok().build();
+        } else {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Person is not found. Please, check login is correct."
+            );
+        }
     }
 
 }
