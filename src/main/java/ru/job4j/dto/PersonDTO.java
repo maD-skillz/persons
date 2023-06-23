@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Data
@@ -20,6 +21,8 @@ public class PersonDTO {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private int id;
+    @NotBlank(message = "login bust be not null")
     private String login;
+    @NotBlank(message = "password bust be not null")
     private String password;
 }

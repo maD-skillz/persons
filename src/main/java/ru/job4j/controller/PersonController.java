@@ -4,12 +4,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.dto.PersonDTO;
 import ru.job4j.domain.Person;
 import ru.job4j.service.PersonService;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,20 +24,23 @@ public class PersonController {
     private BCryptPasswordEncoder encoder;
 
     @GetMapping("/all")
+    @Validated(Person.class)
     public List<Person> findAll() {
         return this.persons.findAll();
     }
 
     @GetMapping("/{id}")
-    public Person findById(@PathVariable int id) {
+    @Validated(Person.class)
+    public Person findById(@Valid @PathVariable int id) {
         return persons.findById(id).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Person is not found. Please, check login is correct."
         ));
     }
 
     @PostMapping("/create")
+    @Validated(Person.class)
     public Person create(
-            @RequestBody Person person) {
+            @Valid @RequestBody Person person) {
         if (person.getLogin() == null || person.getPassword() == null) {
            throw new NullPointerException("Login or password should not be empty!");
         }
@@ -49,7 +54,8 @@ public class PersonController {
     }
 
     @PutMapping("/")
-    public ResponseEntity<Void> update(@RequestBody Person person) {
+    @Validated(Person.class)
+    public ResponseEntity<Void> update(@Valid @RequestBody Person person) {
         if (person.getLogin() == null || person.getPassword() == null) {
             throw  new NullPointerException("Login or password should not be empty!");
         }
@@ -63,7 +69,8 @@ public class PersonController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    @Validated(Person.class)
+    public ResponseEntity<Void> delete(@Valid @PathVariable int id) {
         Person person = new Person();
         person.setId(id);
         if (persons.delete(person)) {
@@ -73,7 +80,8 @@ public class PersonController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> updatePartial(@RequestBody PersonDTO personDTO) {
+    @Validated(PersonDTO.class)
+    public ResponseEntity<Void> updatePartial(@Valid @RequestBody PersonDTO personDTO) {
         Optional<Person> optionalPerson = persons.findById(personDTO.getId());
         if (optionalPerson.isPresent()) {
             Person person = optionalPerson.get();
