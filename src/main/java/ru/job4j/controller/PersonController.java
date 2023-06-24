@@ -83,21 +83,17 @@ public class PersonController {
     @Validated(PersonDTO.class)
     public ResponseEntity<Void> updatePartial(@Valid @RequestBody PersonDTO personDTO) {
         Optional<Person> optionalPerson = persons.findById(personDTO.getId());
-        if (optionalPerson.isPresent()) {
-            Person person = optionalPerson.get();
-            if (personDTO.getLogin() != null) {
-                person.setLogin(personDTO.getLogin());
-            }
-            if (personDTO.getPassword() != null) {
-                person.setPassword(encoder.encode(personDTO.getPassword()));
-            }
-            persons.save(person);
-            return ResponseEntity.ok().build();
-        } else {
+        if (optionalPerson.isEmpty()) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Person is not found. Please, check login is correct."
             );
         }
+        Person person = optionalPerson.get();
+        if (personDTO.getPassword() != null) {
+            person.setPassword(encoder.encode(personDTO.getPassword()));
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
     }
 
 }
